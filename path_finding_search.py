@@ -1,8 +1,15 @@
 #!/usr/bin/python
-import os, sys, re
+import os
+import sys
+import re
+
 
 def process_args(argv):
     argv = argv[1:]
+
+    if '-p' not in argv:
+        print('Path was not provided, use -p to provide path')
+        sys.exit(1)
 
     if '-A':
         algorithm = 'a*'
@@ -11,14 +18,17 @@ def process_args(argv):
     elif '-B':
         algorithm = 'bfs'
     else:
-        algorithm = None
+        print("Algorithm wasn't provided")
+        sys.exit(1)
 
     path = argv[argv.index('-p') + 1]
     return algorithm, path
 
+
 def get_data(path):
     f = open(path, 'r')
-    clean = lambda x: [int(i.strip('\n')) for i in x] # using this to remove next line escape char and convert to int
+    # using this to remove next line escape char and convert to int
+    def clean(x): return [int(i.strip('\n')) for i in x]
     dimensions = clean(f.readline().split(' '))
     start_location = clean(f.readline().split(' '))
     goal_location = clean(f.readline().split(' '))
@@ -28,6 +38,7 @@ def get_data(path):
         map.append(clean(f.readline().split(' ')))
 
     return dimensions, start_location, goal_location, map
+
 
 if __name__ == "__main__":
     algorithm, path = process_args(sys.argv)
