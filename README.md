@@ -1,5 +1,7 @@
 # Path finding and search assignment
 
+---
+
 This assignment requires us to implement three searching algorithms:
 
 - Breadth-first search.
@@ -11,7 +13,7 @@ For the three algorithms, it is required to implement a repeat-state checking to
 ## Use
 
 To use this code, you can either use the following command:
-`./path_finding_search.py -p <path> <algorithm>`
+`python path_finding_search.py -p <path> <algorithm>`
 
 For the algorithm parameter, these are the options:
 |arg|description|
@@ -22,4 +24,8 @@ For the algorithm parameter, these are the options:
 
 ##### Example
 
-`./path_finding_search.py -p data.txt -A`
+`python path_finding_search.py -p data.txt -A`
+
+**Note:** Python 3 is requiered as well as numpy. If you need to install numpy use the following command:
+
+`pip3 install numpy`
