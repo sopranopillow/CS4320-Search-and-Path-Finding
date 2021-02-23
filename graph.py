@@ -64,12 +64,12 @@ class Graph:
         q.append(start_goal)
         visited[start_goal] = True
 
-        print(q, visited)
-        # while q:
-        #     s = q.pop(0)
-        #     print(s)
-        #     for i in range(len(g.edges[s[0]])):
-        #         if visited[s[0], i] == False:
-        #             print(q)
-        #             q.append((s[0], i))
-        #             visited[s[0], i] = True
+        while q:
+            s = q.pop(0)
+            print('s ' + str(s))
+            if g.edges.get(str(s[0]) + ', ' + str(s[1])):
+                for i in g.edges[str(s[0]) + ', ' + str(s[1])]:
+                    if visited[i[0][0],i[0][1]] == False:
+                        print('q ' + str(q))
+                        q.append(i[0])
+                        visited[i[0][0],i[0][1]] = True

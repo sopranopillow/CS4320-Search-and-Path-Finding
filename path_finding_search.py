@@ -36,7 +36,7 @@ def get_data(path):
 
     f.close()
     g.draw_graph()
-    return g, start_location, goal_location, dimensions
+    return g, start_location, goal_location
 
 def process_args(argv):
     argv = argv[1:]
@@ -45,11 +45,11 @@ def process_args(argv):
         print('Path was not provided, use -p to provide path')
         sys.exit(1)
 
-    if '-A':
+    if '-A*':
         algorithm = 'a*'
-    elif '-I':
+    elif '-IDS':
         algorithm = 'iter'
-    elif '-B':
+    elif '-BFS':
         algorithm = 'bfs'
     else:
         print("Algorithm wasn't provided")
@@ -58,8 +58,39 @@ def process_args(argv):
     path = argv[argv.index('-p') + 1]
     return algorithm, path
 
+def A_s(g, start_goal, goal_location):
+        pass
+
+def iterative_deepening(g, start_goal, goal_location):
+    pass
+
+def bfs(g, start_goal):
+    visited = np.zeros(g.dimensions, dtype=bool)
+    nodes_expanded = 0
+    prev = np.zeros((g.dimensions[0], g.dimensions[1], 2), dtype=int) - 1
+    q = []
+    q.append(start_goal)
+    visited[start_goal[0], start_goal[1]] = True
+
+    while q:
+        u = q.pop(0)
+        nodes_expanded += 1
+        for edge in g.edges[str(u[0]) + ', ' + str(u[1])]:
+            if not visited[edge[0][0], edge[0][1]]:
+                visited[edge[0][0], edge[0][1]] = True
+                prev[edge[0][0], edge[0][1]] = u
+                q.append(edge[0])
+    return prev, nodes_expanded
+
+def print_path(path):
+    for i in path:
+        for j in i:
+            print(j, end=' ')
+        print()
+
 if __name__ == "__main__":
     algorithm, path = process_args(sys.argv)
-    g, start_location, goal_location, dimensions = get_data(path)
-    g.bfs(g, start_location, goal_location, dimensions)
+    g, start_location, goal_location = get_data(path)
+    path, nodes_expanded = bfs(g, start_location)
+
     plt.show()
