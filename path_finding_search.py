@@ -3,24 +3,30 @@ import os
 import sys
 import re
 import numpy as np
+import graph
+import matplotlib.pyplot as plt
 
-class Graph:
-    def __init__(self, dimensions):  # assuming all are weighted and directed
-        self.edges = np.zeros(dimensions, dtype=int)
+def A_s(g, start_goal, goal_location, dimensions):
+    pass
 
-    def insert_edge(self, s, d, w):
-        self.edges[s, d] = w
+def iterative_deepening(g, start_goal, goal_location, dimensions):
+    pass
 
-    def A_s(g, start_goal, goal_location, dimensions):
-        pass
+def bfs(g, start_goal, goal_location, dimensions):
+    q = []
+    visited = np.zeros(dimensions, dtype=bool)
 
-    def iterative_deepening(g, start_goal, goal_location, dimensions):
-        pass
+    q.append(start_goal)
+    visited[start_goal] = True
 
-    def bfs(map, start_goal, goal_location, dimensions):
-        q = []
-        visited = [False for i in range(dimensions[0] * dimensions[1])]
-        q.append(start_goal)
+    while q:
+        s = q.pop(0)
+        print(s)
+        for i in range(len(g.edges[s[0]])):
+            if visited[s[0], i] == False:
+                print(q)
+                q.append((s[0], i))
+                visited[s[0], i] = True
 
 def get_data(path):
     # using this to remove next line escape char and convert to int
@@ -30,15 +36,18 @@ def get_data(path):
     dimensions = clean(f.readline().split(' '))
     start_location = clean(f.readline().split(' '))
     goal_location = clean(f.readline().split(' '))
-    g = Graph(dimensions)
+    g = graph.Graph(dimensions)
+    map = []
 
     for r in range(dimensions[0]):
-        v = clean(f.readline().split(' '))
-        for c in range(dimensions[1]):
-            g.insert_edge(r, c, v[c])
+        map.append(clean(f.readline().split(' ')))
+
+    for r in range(dimensions[0]):
+        for 
 
     f.close()
-    return dimensions, start_location, goal_location, g
+    g.draw_graph()
+    return g, start_location, goal_location, dimensions
 
 def process_args(argv):
     argv = argv[1:]
@@ -62,4 +71,6 @@ def process_args(argv):
 
 if __name__ == "__main__":
     algorithm, path = process_args(sys.argv)
-    dimensions, start_location, goal_location, g = get_data(path)
+    g, start_location, goal_location, dimensions = get_data(path)
+    # g.bfs(g, start_location, goal_location, dimensions)
+    plt.show()
