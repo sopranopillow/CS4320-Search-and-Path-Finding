@@ -50,26 +50,3 @@ class Graph:
             self.edges[source] = [[[d_r, d_c],w]]
         else:
             self.edges[source].append([[d_r, d_c],w])
-
-    def A_s(self, g, start_goal, goal_location, dimensions):
-        pass
-
-    def iterative_deepening(self, g, start_goal, goal_location, dimensions):
-        pass
-
-    def bfs(self, g, start_goal, goal_location, dimensions):
-        q = []
-        visited = np.zeros(self.dimensions, dtype=bool)
-
-        q.append(start_goal)
-        visited[start_goal] = True
-
-        while q:
-            s = q.pop(0)
-            print('s ' + str(s))
-            if g.edges.get(str(s[0]) + ', ' + str(s[1])):
-                for i in g.edges[str(s[0]) + ', ' + str(s[1])]:
-                    if visited[i[0][0],i[0][1]] == False:
-                        print('q ' + str(q))
-                        q.append(i[0])
-                        visited[i[0][0],i[0][1]] = True
