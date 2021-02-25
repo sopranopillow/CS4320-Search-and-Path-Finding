@@ -18,13 +18,13 @@ To use this code, you can either use the following command:
 For the algorithm parameter, these are the options:
 |arg|description|
 |-|-|
-|-B|use bredth-first search to process data|
-|-I|use iterative deepening serach to process data|
-|-A|use A\* with Manhattan heuristic to process data|
+|-BFS|use bredth-first search to process data|
+|-IDS|use iterative deepening serach to process data|
+|-A\*|use A\* with Manhattan heuristic to process data|
 
 ##### Example
 
-`python path_finding_search.py -p data.txt -A`
+`python path_finding_search.py -p data.txt -A*`
 
 **Note:** Python 3 is requiered as well as numpy. If you need to install numpy use the following command:
 

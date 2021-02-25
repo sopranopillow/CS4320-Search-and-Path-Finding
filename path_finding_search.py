@@ -22,9 +22,11 @@ def get_data(path):
     check_bounds = lambda coordinate: (coordinate[0] < dimensions[0] and coordinate[0] >= 0) and \
             (coordinate[1] < dimensions[1] and coordinate[1] >= 0)
 
+    # This first creates an array with all the weight values, i.e. the weight to get from 0,0 to 0,1 is map[0,1]
     for r in range(dimensions[0]):
         map.append(clean(f.readline().split(' ')))
 
+    # This populates the graph, for every coordinate r,c it will try to create the edges [r+1,c] [r-1,c] [r, c-1], [r, c+1]
     for r in range(dimensions[0]):
         for c in range(dimensions[1]):
             for change in [1, -1]:
@@ -32,10 +34,7 @@ def get_data(path):
                     g.insert_edge(r, c, r + change, c, map[r + change][c])
                 if check_bounds((r, c + change)):
                     g.insert_edge(r, c, r, c + change, map[r][c + change])
-
-
     f.close()
-    g.draw_graph()
     return g, start_location, goal_location
 
 def process_args(argv):
@@ -55,11 +54,10 @@ def process_args(argv):
         print("Algorithm wasn't provided")
         sys.exit(1)
 
-    path = argv[argv.index('-p') + 1]
-    return algorithm, path
+    return algorithm, argv[argv.index('-p') + 1]
 
 def A_s(g, start_goal, goal_location):
-        pass
+    pass
 
 def iterative_deepening(g, start_goal, goal_location):
     pass
@@ -67,7 +65,7 @@ def iterative_deepening(g, start_goal, goal_location):
 def bfs(g, start_goal):
     visited = np.zeros(g.dimensions, dtype=bool)
     nodes_expanded = 0
-    prev = np.zeros((g.dimensions[0], g.dimensions[1], 2), dtype=int) - 1
+    prev = np.zeros((g.dimensions[0], g.dimensions[1], 2), dtype=int) - 1 # this will allow to trace back the path
     q = []
     q.append(start_goal)
     visited[start_goal[0], start_goal[1]] = True
@@ -89,8 +87,11 @@ def print_path(path):
         print()
 
 if __name__ == "__main__":
-    algorithm, path = process_args(sys.argv)
-    g, start_location, goal_location = get_data(path)
+    algorithm, file_path = process_args(sys.argv)
+    g, start_location, goal_location = get_data(file_path)
     path, nodes_expanded = bfs(g, start_location)
+    print_path(path)
 
+    # draw graph
+    g.draw_graph()
     plt.show()
