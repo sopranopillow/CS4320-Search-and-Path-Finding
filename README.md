@@ -13,9 +13,15 @@ For the three algorithms, it is required to implement a repeat-state checking to
 ## Use
 
 To use this code, you can either use the following command:
-`python path_finding_search.py -p <path> <algorithm>`
+`python path_finding_search.py <-f/-d> <file/directory> <-BFS/-IDS/-A*>`
 
-For the algorithm parameter, these are the options:
+For the data arguments, these are the options:
+|arg|description|
+|-|-|
+|-f|specify the path to a file that contains the data|
+|-d|specify a directory where there are files that contain the data|
+
+For the algorithm arguments, these are the options:
 |arg|description|
 |-|-|
 |-BFS|use bredth-first search to process data|
@@ -24,7 +30,12 @@ For the algorithm parameter, these are the options:
 
 ##### Example
 
-`python path_finding_search.py -p data.txt -A*`
+Single File:
+
+`python path_finding_search.py -f data.txt -A*`
+
+Directory:
+`python path_finding_search.py -d testfiles -A*`
 
 **Note:** Python 3 is requiered as well as numpy. If you need to install numpy use the following command:
 
