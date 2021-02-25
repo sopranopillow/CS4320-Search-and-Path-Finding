@@ -52,10 +52,9 @@ def populate_graph(map, dimensions):
     for r in range(dimensions[0]):
         for c in range(dimensions[1]):
             for change in [1, -1]:
-                if check_bounds((r + change, c)):
-                    g.insert_edge(r, c, r + change, c, map[r + change][c])
-                if check_bounds((r, c + change)):
-                    g.insert_edge(r, c, r, c + change, map[r][c + change])
+                for edge in [[r + change, c], [r, c + change]]:
+                    if check_bounds(edge) and map[edge[0]][edge[1]] != 0:
+                        g.insert_edge(r, c, edge[0], edge[1], map[edge[0]][edge[1]])
     return g
 
 def process_args(argv):
@@ -131,4 +130,7 @@ if __name__ == "__main__":
         path, nodes_expanded = bfs(d[0], d[1])
         print_path(path)
         d[0].draw_graph()
+        for i in d[0].edges:
+            print(i)
+            print(d[0].edges[i], end='\n\n')
     plt.show()
