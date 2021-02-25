@@ -32,13 +32,12 @@ class Graph:
 
     def draw_graph(self): # note that when there's no edges, drawing might look a little off
         fig, ax = plt.subplots()
-        r = 30
         coords = {}
 
         # set coordinates coords = [[x, y]]
         for r in range(self.dimensions[0]):
             for c in range(self.dimensions[1]):
-                coords[str(r) + ', ' + str(c)] = [.2*c, -.2*r]
+                coords[str(r) + ', ' + str(c)] = [1*c, -1*r]
 
         # draw edges
         for r in range(self.dimensions[0]):
@@ -52,7 +51,7 @@ class Graph:
 
         # draw nodes
         for coord in coords:
-            ax.text(coords[coord][0], coords[coord][1], coord, size=10, ha="center", va="center",
+            ax.text(coords[coord][0], coords[coord][1], coord, size=50//(max(self.dimensions)), ha="center", va="center",
                 bbox=dict(facecolor='w',boxstyle=BoxStyle("Round", pad=.4)))
 
         ax.set_aspect(1.0)

@@ -16,10 +16,10 @@ def generate_test_data(dimensions):
     map = [[random.randint(0,5) for j in range(dimensions[1])] for i in range(dimensions[0])]
 
     # making sure goal_location and start_location are not 0
-    if map[start_location[0], start_location[1]] == 0:
-        map[start_location[0], start_location[1]] = random.randint(1, 5)
-    if map[goal_location[0], goal_location[1]] == 0:
-        map[goal_location[0], goal_location[1]] = random.randint(1, 5)
+    if map[start_location[0]][start_location[1]] == 0:
+        map[start_location[0]][start_location[1]] = random.randint(1, 5)
+    if map[goal_location[0]][goal_location[1]] == 0:
+        map[goal_location[0]][goal_location[1]] = random.randint(1, 5)
 
     return populate_graph(map, dimensions), start_location, goal_location
 
@@ -60,17 +60,23 @@ def populate_graph(map, dimensions):
 
 def process_args(argv):
     argv = argv[1:]
-    files = []
+    data = []
 
-    if '-f' not in argv and '-d' not in argv:
-        print('File/folder was not provided, use -f to provide file or -d to provide a directory')
+    if '-f' not in argv and '-d' not in argv and '-g' not in argv:
+        print('File/folder/test was not provided. Use -f to provide file, -d to provide a directory, or -g to generate test data randomly.')
         sys.exit(1)
 
     if '-f' in argv:
-        files.append(argv[argv.index('-f') + 1])
-    else:
+        data.append(get_data(argv[argv.index('-f') + 1]))
+        print('f', data)
+    elif '-d' in argv:
         directory = argv[argv.index('-d') + 1]
-        files += [directory + ('' if directory[-1] == '/' else '/') + file for file in os.listdir(directory)]
+        data += [get_data(directory + ('' if directory[-1] == '/' else '/') + file) for file in os.listdir(directory)]
+        print('d', data)
+    else:
+        for i in [[5, 5], [10, 10], [15, 15], [20, 20]]:
+            data.append(generate_test_data(i))
+        print('r', data)
 
     if '-A*':
         algorithm = 'a*'
@@ -82,7 +88,7 @@ def process_args(argv):
         print("Algorithm wasn't provided")
         sys.exit(1)
 
-    return algorithm, files
+    return algorithm, data
 
 def A_s(g, start_goal, goal_location):
     pass
@@ -119,10 +125,10 @@ def print_path(path):
         print()
 
 if __name__ == "__main__":
-    algorithm, files = process_args(sys.argv)
-    for file in files:
-        g, start_location, goal_location = get_data(file)
-        path, nodes_expanded = bfs(g, start_location)
+    algorithm, data = process_args(sys.argv)
+    # d has the structure [g, start_location, goal_location]
+    for d in data:
+        path, nodes_expanded = bfs(d[0], d[1])
         print_path(path)
-        g.draw_graph()
+        d[0].draw_graph()
     plt.show()
