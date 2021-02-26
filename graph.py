@@ -63,3 +63,9 @@ class Graph:
             self.edges[source] = [[[d_r, d_c],w]]
         else:
             self.edges[source].append([[d_r, d_c],w])
+
+    def get_weight(self, source, dest):
+        for edge in self.edges[str(source[0]) + ', ' + str(source[1])]:
+            if edge:
+                return edge[1]
+        return None

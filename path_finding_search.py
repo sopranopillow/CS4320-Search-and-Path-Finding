@@ -67,22 +67,19 @@ def process_args(argv):
 
     if '-f' in argv:
         data.append(get_data(argv[argv.index('-f') + 1]))
-        print('f', data)
     elif '-d' in argv:
         directory = argv[argv.index('-d') + 1]
         data += [get_data(directory + ('' if directory[-1] == '/' else '/') + file) for file in os.listdir(directory)]
-        print('d', data)
     else:
         for i in [[5, 5], [10, 10], [15, 15], [20, 20]]:
             data.append(generate_test_data(i))
-        print('r', data)
 
-    if '-A*':
-        algorithm = 'a*'
-    elif '-IDS':
-        algorithm = 'iter'
-    elif '-BFS':
-        algorithm = 'bfs'
+    if '-A*' in argv:
+        algorithm = lambda d: A_s(d[0], d[1], d[2])
+    elif '-IDS' in argv:
+        algorithm = lambda d: iterative_deepening(d[0], d[1], d[2])
+    elif '-BFS' in argv:
+        algorithm = lambda d: bfs(d[0], d[1])
     else:
         print("Algorithm wasn't provided")
         sys.exit(1)
@@ -99,6 +96,7 @@ def bfs(g, start_goal):
     start_time = time.time()
     visited = np.zeros(g.dimensions, dtype=bool)
     nodes_expanded = 0
+    max_nodes_in_mem = 0
     prev = np.zeros((g.dimensions[0], g.dimensions[1], 2), dtype=int) - 1 # this will allow to trace back the path
     q = []
     q.append(start_goal)
@@ -109,28 +107,45 @@ def bfs(g, start_goal):
             print("BFS took will take more than 3 minutes, returned values are computed results.")
             return prev, nodes_expanded
         u = q.pop(0)
+        max_nodes_in_mem = max_nodes_in_mem if max_nodes_in_mem > len(q) else len(q)
         nodes_expanded += 1
         for edge in g.edges[str(u[0]) + ', ' + str(u[1])]:
             if not visited[edge[0][0], edge[0][1]]:
                 visited[edge[0][0], edge[0][1]] = True
                 prev[edge[0][0], edge[0][1]] = u
                 q.append(edge[0])
-    return prev, nodes_expanded
+    return prev, nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
 
-def print_path(path):
-    for i in path:
-        for j in i:
-            print(j, end=' ')
-        print()
+# extracts path squence and cost from given path
+def get_path_info(path, graph_info):
+    cost = 0
+    g, start, goal = graph_info
+    path_sequence = []
+    prev = goal
+    current = path[prev[0]][prev[1]]
+
+    while current[0] != -1 and current[1] != -1:
+        cost += g.get_weight(current, prev)
+        path_sequence.append(prev)
+        prev = current
+        current = path[current[0]][current[1]]
+    path_sequence.append(prev)
+
+    return cost, path_sequence
 
 if __name__ == "__main__":
     algorithm, data = process_args(sys.argv)
     # d has the structure [g, start_location, goal_location]
     for d in data:
-        path, nodes_expanded = bfs(d[0], d[1])
-        print_path(path)
+        path, nodes_expanded, runtime, max_nodes_in_mem = algorithm(d)
+        cost, path_sequence = get_path_info(path, d)
+        print('Cost:', cost)
+        print('Number of nodes expanded:', nodes_expanded)
+        print('Max number of nodes held in memory:', max_nodes_in_mem)
+        print('Runtime in milliseconds:', runtime)
+        print('Path sequence:', end=' ')
+        for step in path_sequence:
+            print(step, end=' ')
+        print('\n\n')
         d[0].draw_graph()
-        for i in d[0].edges:
-            print(i)
-            print(d[0].edges[i], end='\n\n')
     plt.show()
