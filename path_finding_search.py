@@ -101,9 +101,9 @@ def DLS(g, path, goal_location, maxDepth):
     for i in g.edges[str(current[0]) + ', ' + str(current[1])]:
         newPath = path.copy()
         newPath.append(i[0])
-        if DLS(g, newPath, goal_location, maxDepth - 1):
-            return path
-        return False
+        result = DLS(g, newPath, goal_location, maxDepth - 1)
+        if result is not None:
+            return result
 
 
 def iterative_deepening(g, start_location, goal_location):
