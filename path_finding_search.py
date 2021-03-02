@@ -115,6 +115,7 @@ def iterative_deepening(g, start_location, goal_location):
 
     for depth in range(0, maxDepth):
         result = DLS(g, path, goal_location, maxDepth)
+        nodes_expanded += 1
         if result is not None:
             continue
         return result
