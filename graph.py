@@ -66,6 +66,6 @@ class Graph:
 
     def get_weight(self, source, dest):
         for edge in self.edges[str(source[0]) + ', ' + str(source[1])]:
-            if edge:
+            if edge[0][0] == dest[0] and edge[0][1] == dest[1]:
                 return edge[1]
         return None
