@@ -89,8 +89,38 @@ def process_args(argv):
 def A_s(g, start_goal, goal_location):
     pass
 
+def DLS(g, path, goal_location, maxDepth):
+
+    print(path)
+    current = path[-1]
+
+    if current == goal_location:
+        return path
+
+    if maxDepth <= 0:
+        print("No path exists")
+
+    for i in g.edges[str(current[0]) + ', ' + str(current[1])]:
+        newPath = path.copy()
+        newPath.append(i[0])
+        if DLS(g, newPath, goal_location, maxDepth - 1):
+            return path
+        return False
+
+
 def iterative_deepening(g, start_goal, goal_location):
-    pass
+    start_time = time.time()
+    maxDepth = g.dimensions[1]
+    path = [start_goal]
+    nodes_expanded = 0
+    max_nodes_in_mem = 0
+
+    for depth in range(0, maxDepth):
+        result = DLS(g, path, goal_location, maxDepth)
+        if result is not None:
+            continue
+        return result
+    return result, nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
 
 def bfs(g, start_goal):
     start_time = time.time()
