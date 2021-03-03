@@ -93,14 +93,18 @@ def manhattan_distance(a, b):
 def A_s(g, start_location, goal_location):
     start_time = time.time()
     q = PriorityQueue()
-    q.put(start_location, 0)
-    cost_so_far = {} # {location([int, int]): cost(float)}
     came_from = np.zeros((g.dimensions[0], g.dimensions[1], 2), dtype=int) - 1
+    cost_so_far = {} # {location([int, int]): cost(float)}
+    max_nodes_in_mem = 0
+    nodes_expanded = 0
+
+    q.put(start_location, 0)
     cost_so_far[str(start_location[0]) + ', ' + str(start_location[1])] = 0
 
     while not q.empty():
         max_nodes_in_mem = max(max_nodes_in_mem, q.qsize())
         current = q.get()
+        nodes_expanded += 1
         current_str = str(current[0]) + ', ' + str(current[1])
 
         if current[0] == goal_location[0] and current[1] == goal_location[1]:
@@ -109,7 +113,7 @@ def A_s(g, start_location, goal_location):
         for edge in g.edges[current_str]:
             new_cost = cost_so_far[current_str] + edge[1]
             edge_str = str(edge[0][0]) + ', ' + str(edge[0][1])
-            if edge not in cost_so_far or new_cost < cost_so_far[edge_str]:
+            if edge_str not in cost_so_far or new_cost < cost_so_far[edge_str]:
                 cost_so_far[edge_str] = new_cost
                 priority = new_cost + manhattan_distance(edge[0], goal_location)
                 q.put(edge[0], priority)
