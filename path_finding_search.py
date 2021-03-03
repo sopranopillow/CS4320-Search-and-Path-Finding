@@ -107,6 +107,10 @@ def A_s(g, start_location, goal_location):
         nodes_expanded += 1
         current_str = str(current[0]) + ', ' + str(current[1])
 
+        if time.time() - start_time >= 180:
+            print("BFS took will take more than 3 minutes, returned values are computed results.")
+            return get_path(came_from, goal_location), nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
+
         if current[0] == goal_location[0] and current[1] == goal_location[1]:
             break
 
@@ -167,7 +171,7 @@ def bfs(g, start_location, goal_location):
     while q:
         if time.time() - start_time >= 180:
             print("BFS took will take more than 3 minutes, returned values are computed results.")
-            return prev, nodes_expanded
+            return get_path(prev, goal_location), nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
         u = q.pop(0)
         max_nodes_in_mem = max_nodes_in_mem if max_nodes_in_mem > len(q) else len(q)
         nodes_expanded += 1
