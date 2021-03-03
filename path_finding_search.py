@@ -22,6 +22,15 @@ def generate_test_data(dimensions):
     if map[goal_location[0]][goal_location[1]] == 0:
         map[goal_location[0]][goal_location[1]] = random.randint(1, 5)
 
+    f = open('test_files/' + str(dimensions[0]) + 'x' + str(dimensions[1]) + '.txt', mode='w+')
+    f.write(str(dimensions[0]) + ' ' + str(dimensions[1])+'\n')
+    f.write(str(start_location[0]) + ' ' + str(start_location[1])+'\n')
+    f.write(str(goal_location[0]) + ' ' + str(goal_location[1])+'\n')
+
+    for i in map:
+        f.write(str(i)[1:-1].replace(',','') + '\n')
+    f.close()
+
     return populate_graph(map, dimensions), start_location, goal_location
 
 def get_data(path):
@@ -128,34 +137,30 @@ def A_s(g, start_location, goal_location):
 
 def DLS(g, path, goal_location, maxDepth):
     current = path[-1]
-
-    if current == goal_location:
+    if current[0] == goal_location[0] and current[1] == goal_location[1]:
         return path
-
     if maxDepth <= 0:
-        print("No path exists")
-
-    for i in g.edges[str(current[0]) + ', ' + str(current[1])]:
-        newPath = path.copy()
-        newPath.append(i[0])
-        result = DLS(g, newPath, goal_location, maxDepth - 1)
+        return None
+    for edge in g.edges[str(current[0]) + ', ' + str(current[1])]:
+        new_path = path.copy()
+        new_path.append(edge[0])
+        result = DLS(g, new_path, goal_location, maxDepth-1)
         if result is not None:
             return result
 
 
 def iterative_deepening(g, start_location, goal_location):
     start_time = time.time()
-    maxDepth = g.dimensions[1]
+    maxDepth = g.dimensions[0] * g.dimensions[1]
     path = [start_location]
     nodes_expanded = 0
     max_nodes_in_mem = 0
 
-    for depth in range(0, maxDepth):
-        result = DLS(g, path, goal_location, maxDepth)
+    for depth in range(maxDepth):
+        result = DLS(g, path, goal_location, depth)
         nodes_expanded += 1
-        if result is not None:
-            continue
-        return result
+        if result:
+            return result, nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
     return result, nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
 
 def bfs(g, start_location, goal_location):
