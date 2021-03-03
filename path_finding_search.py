@@ -5,6 +5,7 @@ import graph
 import matplotlib.pyplot as plt
 import random
 import time
+from queue import PriorityQueue
 
 # dimensions must be a tuple (r,c)
 def generate_test_data(dimensions):
@@ -86,8 +87,36 @@ def process_args(argv):
 
     return algorithm, data
 
+def manhattan_distance(a, b):
+    return abs(b[0] - a[0]) + abs(b[1] - a[1])
+
 def A_s(g, start_location, goal_location):
-    pass
+    start_time = time.time()
+    q = PriorityQueue()
+    q.put(start_location, 0)
+    cost_so_far = {} # {location([int, int]): cost(float)}
+    came_from = np.zeros((g.dimensions[0], g.dimensions[1], 2), dtype=int) - 1
+    cost_so_far[str(start_location[0]) + ', ' + str(start_location[1])] = 0
+
+    while not q.empty():
+        max_nodes_in_mem = max(max_nodes_in_mem, q.qsize())
+        current = q.get()
+        current_str = str(current[0]) + ', ' + str(current[1])
+
+        if current[0] == goal_location[0] and current[1] == goal_location[1]:
+            break
+
+        for edge in g.edges[current_str]:
+            new_cost = cost_so_far[current_str] + edge[1]
+            edge_str = str(edge[0][0]) + ', ' + str(edge[0][1])
+            if edge not in cost_so_far or new_cost < cost_so_far[edge_str]:
+                cost_so_far[edge_str] = new_cost
+                priority = new_cost + manhattan_distance(edge[0], goal_location)
+                q.put(edge[0], priority)
+                came_from[edge[0][0], edge[0][1]] = current
+    return get_path(came_from, goal_location), nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
+
+
 
 def DLS(g, path, goal_location, maxDepth):
     current = path[-1]
@@ -142,9 +171,9 @@ def bfs(g, start_location, goal_location):
                 visited[edge[0][0], edge[0][1]] = True
                 prev[edge[0][0], edge[0][1]] = u
                 q.append(edge[0])
-    return get_bfs_path(prev, goal_location), nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
+    return get_path(prev, goal_location), nodes_expanded, (time.time() - start_time) * 1000, max_nodes_in_mem
 
-def get_bfs_path(path, goal):
+def get_path(path, goal):
     path_sequence = []
     prev = goal
     current = path[prev[0]][prev[1]]
