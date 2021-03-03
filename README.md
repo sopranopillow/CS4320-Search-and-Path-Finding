@@ -35,7 +35,7 @@ Single File:
 `python path_finding_search.py -f data.txt -A*`
 
 Directory:
-`python path_finding_search.py -d testfiles -A*`
+`python path_finding_search.py -d test_files -A*`
 
 Random data:
 `python path_finding_search.py -g -A*`
